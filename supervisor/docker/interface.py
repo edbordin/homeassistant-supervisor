@@ -58,6 +58,8 @@ from .utils import get_registry_from_image
 _LOGGER: logging.Logger = logging.getLogger(__name__)
 
 MAP_ARCH: dict[CpuArch, str] = {
+    CpuArch.ARMHF: "linux/arm/v6",
+    CpuArch.ARMV7: "linux/arm/v7",
     CpuArch.AARCH64: "linux/arm64",
     CpuArch.AMD64: "linux/amd64",
 }

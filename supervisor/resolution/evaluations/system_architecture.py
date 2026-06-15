@@ -33,6 +33,4 @@ class EvaluateSystemArchitecture(EvaluateBase):
         """Run evaluation."""
         return self.sys_supervisor.arch in {
             "i386",
-            "armhf",
-            "armv7",
         }

@@ -40,6 +40,8 @@ from tests.common import AsyncIterator, load_json_fixture
 @pytest.mark.parametrize(
     ("cpu_arch", "platform"),
     [
+        (CpuArch.ARMHF, "linux/arm/v6"),
+        (CpuArch.ARMV7, "linux/arm/v7"),
         (CpuArch.AARCH64, "linux/arm64"),
         (CpuArch.AMD64, "linux/amd64"),
     ],

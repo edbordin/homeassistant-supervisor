@@ -406,8 +406,8 @@ ARCH_AARCH64 = "aarch64"
 ARCH_AMD64 = "amd64"
 ARCH_I386 = "i386"
 
-ARCH_ALL = [ARCH_AARCH64, ARCH_AMD64]
-ARCH_DEPRECATED = [ARCH_ARMHF, ARCH_ARMV7, ARCH_I386]
+ARCH_ALL = [ARCH_ARMHF, ARCH_ARMV7, ARCH_AARCH64, ARCH_AMD64]
+ARCH_DEPRECATED = [ARCH_I386]
 ARCH_ALL_COMPAT = ARCH_ALL + ARCH_DEPRECATED
 
 MACHINE_DEPRECATED = [
@@ -559,6 +559,8 @@ class BusEvent(StrEnum):
 class CpuArch(StrEnum):
     """Supported CPU architectures."""
 
+    ARMHF = "armhf"
+    ARMV7 = "armv7"
     AARCH64 = "aarch64"
     AMD64 = "amd64"
 

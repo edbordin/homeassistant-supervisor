@@ -56,6 +56,26 @@ async def test_raspberrypi3_64_arch(coresys, sys_machine, sys_supervisor):
     assert coresys.arch.supported == [CpuArch.AARCH64]
 
 
+async def test_raspberrypi_arch(coresys, sys_machine, sys_supervisor):
+    """Test arch for raspberrypi."""
+    sys_machine.return_value = "raspberrypi"
+    sys_supervisor.arch = "armhf"
+    await coresys.arch.load()
+
+    assert coresys.arch.default == "armhf"
+    assert coresys.arch.supported == [CpuArch.ARMHF]
+
+
+async def test_raspberrypi4_arch(coresys, sys_machine, sys_supervisor):
+    """Test arch for raspberrypi4."""
+    sys_machine.return_value = "raspberrypi4"
+    sys_supervisor.arch = "armv7"
+    await coresys.arch.load()
+
+    assert coresys.arch.default == "armv7"
+    assert coresys.arch.supported == [CpuArch.ARMV7]
+
+
 async def test_raspberrypi4_64_arch(coresys, sys_machine, sys_supervisor):
     """Test arch for raspberrypi4_64."""
     sys_machine.return_value = "raspberrypi4-64"
@@ -148,6 +168,20 @@ async def test_intel_nuc_arch(coresys, sys_machine, sys_supervisor):
 
     assert coresys.arch.default == "amd64"
     assert coresys.arch.supported == [CpuArch.AMD64]
+
+
+@pytest.mark.parametrize(
+    ("platform_machine", "arch"),
+    [
+        ("armv6l", CpuArch.ARMHF),
+        ("armv7l", CpuArch.ARMV7),
+    ],
+)
+def test_detect_32bit_arm_cpu(coresys, mock_detect_cpu, platform_machine, arch):
+    """Test native CPU detection for 32-bit ARM."""
+    mock_detect_cpu.return_value = platform_machine
+
+    assert coresys.arch.detect_cpu() == arch
 
 
 async def test_qemux86_64_arch(coresys, sys_machine, sys_supervisor):

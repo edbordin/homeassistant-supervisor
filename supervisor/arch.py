@@ -14,6 +14,9 @@ _LOGGER: logging.Logger = logging.getLogger(__name__)
 ARCH_JSON: Path = Path(__file__).parent.joinpath("data/arch.json")
 
 MAP_CPU: dict[str, CpuArch] = {
+    "armv6": CpuArch.ARMHF,
+    "armhf": CpuArch.ARMHF,
+    "armv7": CpuArch.ARMV7,
     "armv8": CpuArch.AARCH64,
     "aarch64": CpuArch.AARCH64,
     "x86_64": CpuArch.AMD64,
