@@ -47,6 +47,7 @@ RUN \
     apk add --no-cache --virtual .supervisor-build-deps \
         build-base \
         cargo \
+        cmake \
         libffi-dev \
         linux-headers \
         openssl-dev \
