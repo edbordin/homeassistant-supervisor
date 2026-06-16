@@ -6,6 +6,7 @@ ENV \
     S6_KILL_GRACETIME=3000 \
     SUPERVISOR_API=http://localhost \
     CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1 \
+    UV_INDEX_STRATEGY=unsafe-best-match \
     UV_SYSTEM_PYTHON=true
 
 # Install OS packages used both by build and final image
@@ -43,9 +44,18 @@ RUN \
         LOCAL_WHEELS=; \
         echo "No local wheels found"; \
     fi && \
-    uv pip install --compile-bytecode --no-cache --no-build \
+    apk add --no-cache --virtual .supervisor-build-deps \
+        build-base \
+        cargo \
+        libffi-dev \
+        linux-headers \
+        openssl-dev \
+        pkgconf \
+        yaml-dev \
+    && uv pip install --compile-bytecode --no-cache \
         -r requirements.txt \
-        ${LOCAL_WHEELS:+--find-links $LOCAL_WHEELS}
+        ${LOCAL_WHEELS:+--find-links $LOCAL_WHEELS} \
+    && apk del .supervisor-build-deps
 
 # Install Home Assistant Supervisor
 ARG BUILD_VERSION="9999.09.9.dev9999"
