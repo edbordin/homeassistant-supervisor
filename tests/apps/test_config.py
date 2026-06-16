@@ -190,7 +190,7 @@ def test_valid_basic_build():
 def test_valid_legacy_arch_values_for_migration():
     """Validate legacy arch values are accepted for migration compatibility."""
     config = load_json_fixture("basic-app-config.json")
-    config["arch"] = ["armv7", "amd64"]
+    config["arch"] = ["i386", "amd64"]
 
     assert vd.SCHEMA_APP_CONFIG(config)
 
@@ -206,7 +206,7 @@ def test_valid_legacy_build_from_keys_for_migration():
 def test_warn_legacy_arch_values(caplog: pytest.LogCaptureFixture):
     """Warn when deprecated architecture values are present."""
     config = load_json_fixture("basic-app-config.json")
-    config["arch"] = ["armv7", "amd64"]
+    config["arch"] = ["i386", "amd64"]
 
     vd.SCHEMA_APP_CONFIG(config)
 
