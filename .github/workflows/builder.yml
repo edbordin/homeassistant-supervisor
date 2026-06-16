@@ -79,8 +79,10 @@ jobs:
       - name: Check if requirements files changed
         id: requirements
         run: |
+          if [[ "${{ github.repository_owner }}" != "home-assistant" ]]; then
+            echo "build_wheels=false" >> "$GITHUB_OUTPUT"
           # No wheels build necessary for releases
-          if [[ "${{ github.event_name }}" == "release" ]]; then
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
             echo "build_wheels=false" >> "$GITHUB_OUTPUT"
           # Always build wheels for manual dispatches
           elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
