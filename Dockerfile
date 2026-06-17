@@ -7,12 +7,14 @@ ENV \
     SUPERVISOR_API=http://localhost \
     CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1 \
     UV_INDEX_STRATEGY=unsafe-best-match \
+    UV_CACHE_DIR=/root/.cache/uv \
     UV_SYSTEM_PYTHON=true
 
 # Install OS packages used both by build and final image
-RUN \
+RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     set -x \
-    && apk add --no-cache \
+    && apk add --update-cache \
         findutils \
         eudev \
         eudev-libs \
@@ -37,6 +39,8 @@ WORKDIR /usr/src
 RUN \
     --mount=type=bind,source=./requirements.txt,target=/usr/src/requirements.txt \
     --mount=type=bind,source=./wheels,target=/usr/src/wheels \
+    --mount=type=cache,target=/var/cache/apk,sharing=locked \
+    --mount=type=cache,target=/root/.cache/uv,sharing=locked \
     if ls /usr/src/wheels/musllinux/* >/dev/null 2>&1; then \
         LOCAL_WHEELS=/usr/src/wheels/musllinux; \
         echo "Using local wheels from: $LOCAL_WHEELS"; \
@@ -44,7 +48,7 @@ RUN \
         LOCAL_WHEELS=; \
         echo "No local wheels found"; \
     fi && \
-    apk add --no-cache --virtual .supervisor-build-deps \
+    apk add --update-cache --virtual .supervisor-build-deps \
         build-base \
         cargo \
         cmake \
@@ -53,7 +57,7 @@ RUN \
         openssl-dev \
         pkgconf \
         yaml-dev \
-    && uv pip install --compile-bytecode --no-cache \
+    && uv pip install --compile-bytecode \
         -r requirements.txt \
         ${LOCAL_WHEELS:+--find-links $LOCAL_WHEELS} \
     && apk del .supervisor-build-deps
@@ -61,9 +65,9 @@ RUN \
 # Install Home Assistant Supervisor
 ARG BUILD_VERSION="9999.09.9.dev9999"
 COPY . supervisor
-RUN \
+RUN --mount=type=cache,target=/root/.cache/uv,sharing=locked \
     sed -i "s/^SUPERVISOR_VERSION =.*/SUPERVISOR_VERSION = \"${BUILD_VERSION}\"/g" /usr/src/supervisor/supervisor/const.py \
-    && uv pip install --no-cache -e ./supervisor \
+    && uv pip install -e ./supervisor \
     && python3 -m compileall ./supervisor/supervisor
 
 # Copy the rest of rootfs files
